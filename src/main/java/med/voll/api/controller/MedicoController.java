@@ -8,6 +8,7 @@ import med.voll.api.medico.MedicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ public class MedicoController {
     //400 algum campo recebido foi enviado errado
     //*método-http* + Mapping
     //para receber o json é preciso uma classe com os mesmos atributos (padrão DTO)
+
     @PostMapping
     @Transactional//metodo de escrita do spring
     public void cadastrar(@RequestBody @Valid DadosCadastroMedicos dados){
@@ -31,7 +33,7 @@ public class MedicoController {
 
     //a paginação é configurada pelo front end atraves da url
     @GetMapping
-    public Page<DadosListagemMedico> listar(Pageable paginacao){
+    public Page<DadosListagemMedico> listar(@PageableDefault(size = 1, sort = {"nome"}) Pageable paginacao){
         return repository.findAll(paginacao).map(DadosListagemMedico::new);
     }
 }
