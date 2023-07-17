@@ -1,39 +1,45 @@
-package med.voll.api.paciente;
+package med.voll.api.domain.medico;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import med.voll.api.endereco.Endereco;
+import med.voll.api.domain.endereco.Endereco;
 
-@Table(name = "pacientes")
-@Entity(name = "Paciente")
+@Table(name = "medicos")//tabela medicos
+@Entity(name = "Medico")//entidade Medico
+//lombok gera todos esse códigos através dessas anotations
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Paciente {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class Medico {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)//gera o id
     private Long id;
-    private String nome;
-    private String email;
-    private String cpf;
+    private String  nome;
+    private String  email;
+    private String  crm;
     private String telefone;
-    @Embedded
+
+    @Enumerated(EnumType.STRING)//diz que é um enum
+    private Especialidade  especialidade;
+
+    @Embedded//fica em uma classe separada mas considera que pertence a mesma tabela
     private Endereco endereco;
     private Boolean ativo;
 
-    public Paciente(DadosCadastroPacientes dados){
+    public Medico(DadosCadastroMedicos dados) {
         this.nome = dados.nome();
         this.email = dados.email();
-        this.cpf = dados.cpf();
+        this.crm = dados.crm();
         this.telefone = dados.telefone();
+        this.especialidade = dados.especialidade();
         this.endereco = new Endereco(dados.endereco());
         this.ativo = true;
     }
 
-    public void atualizarInformacoes(DadosEditarPaciente dados){
+    public void atualizarInformacoes(DadosEditarMedico dados) {
         if(dados.nome() != null) this.nome = dados.nome();
         if(dados.telefone() != null) this.telefone = dados.telefone();
         if(dados.endereco() != null) this.endereco.atualizarInformacoes(dados.endereco());
@@ -43,4 +49,3 @@ public class Paciente {
         this.ativo = false;
     }
 }
-
